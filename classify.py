@@ -51,7 +51,7 @@ def main():
 
     print("Classifying captchas with symbol set {" + captcha_symbols + "}")
 
-    with open(args.output, 'w') as output_file:
+    with if not os.path.exists(args.output) open(args.output, 'w') else open(args.output, 'a') as output_file:
         
         # char pref tflite model
         char_interpreter = tflite.Interpreter(args.model_name + '.tflite')
@@ -60,6 +60,10 @@ def main():
         char_input_d = char_interpreter.get_input_details()
         char_output_d = char_interpreter.get_output_details()
         done_captcha_dir = os.path.join(args.captcha_dir, ".done")
+
+        if not os.path.exists(done_captcha_dir):
+            os.mkdir(done_captcha_dir)
+
         for x in os.listdir(args.captcha_dir):
             if x == ".done":
                 continue
@@ -84,7 +88,7 @@ def main():
             output_file.write(x + "," + res + "\n")
 
             print('Classified ' + x)
-            print('Moved file to done_captcha_dir' + x)
+            print('Moved file to done_captcha_dir' + os.path.join(done_captcha_dir, x))
             shutil.copy2(os.path.join(args.captcha_dir, x), os.path.join(done_captcha_dir, x))
 
 if __name__ == '__main__':
