@@ -13,17 +13,17 @@ import random
 import argparse
 import tflite_runtime.interpreter as tflite
 import itertools
+import shutil
 
 def decode(characters, y):
     y_idx = numpy.argmax(numpy.array(y), axis=1)
     sym_len = len(characters)
     res = ''.join([characters[x] for i,x in enumerate(y_idx) if x < sym_len])
     return res
-    
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model-name', help='Model name to use for classification', type=str)
-    #parser.add_argument('--len-model-name', help='Model name to use for classification', type=str)
     parser.add_argument('--captcha-dir', help='Where to read the captchas to break', type=str)
     parser.add_argument('--output', help='File where the classifications should be saved', type=str)
     parser.add_argument('--symbols', help='File with the symbols to use in captchas', type=str)
@@ -32,10 +32,6 @@ def main():
     if args.model_name is None:
         print("Please specify the CNN model to use")
         exit(1)
-    
-    #if args.len_model_name is None:
-    #    print("Please specify the CNN model to use")
-    #    exit(1)
 
     if args.captcha_dir is None:
         print("Please specify the directory with captchas to break")
@@ -63,7 +59,7 @@ def main():
 
         char_input_d = char_interpreter.get_input_details()
         char_output_d = char_interpreter.get_output_details()
-
+        done_captcha_dir = args.captcha_dir + "_Done"
         for x in os.listdir(args.captcha_dir):
             # load image and preprocess it
             raw_data = cv2.imread(os.path.join(args.captcha_dir, x))
@@ -86,6 +82,7 @@ def main():
             output_file.write(x + "," + res + "\n")
 
             print('Classified ' + x)
+            shutil.copy2(os.path.join(args.captcha_dir, x), done_captcha_dir)
 
 if __name__ == '__main__':
     main()
