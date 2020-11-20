@@ -59,8 +59,10 @@ def main():
 
         char_input_d = char_interpreter.get_input_details()
         char_output_d = char_interpreter.get_output_details()
-        done_captcha_dir = args.captcha_dir + "_Done"
+        done_captcha_dir = os.path.join(args.captcha_dir, ".done")
         for x in os.listdir(args.captcha_dir):
+            if x == ".done":
+                continue
             # load image and preprocess it
             raw_data = cv2.imread(os.path.join(args.captcha_dir, x))
             rgb_data = cv2.cvtColor(raw_data, cv2.COLOR_BGR2RGB)
@@ -82,7 +84,8 @@ def main():
             output_file.write(x + "," + res + "\n")
 
             print('Classified ' + x)
-            shutil.copy2(os.path.join(args.captcha_dir, x), done_captcha_dir)
+            print('Moved file to done_captcha_dir' + x)
+            shutil.copy2(os.path.join(args.captcha_dir, x), os.path.join(done_captcha_dir, x))
 
 if __name__ == '__main__':
     main()
