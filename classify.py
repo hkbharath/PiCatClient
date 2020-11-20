@@ -13,7 +13,6 @@ import random
 import argparse
 import tflite_runtime.interpreter as tflite
 import itertools
-import shutil
 
 def decode(characters, y):
     y_idx = numpy.argmax(numpy.array(y), axis=1)
@@ -89,7 +88,7 @@ def main():
 
             print('Classified ' + x)
             print('Moved file to done_captcha_dir' + os.path.join(done_captcha_dir, x))
-            shutil.copy2(os.path.join(args.captcha_dir, x), os.path.join(done_captcha_dir, x))
+            os.move(os.path.join(args.captcha_dir, x), os.path.join(done_captcha_dir, x))
 
 if __name__ == '__main__':
     main()
