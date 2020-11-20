@@ -51,7 +51,7 @@ def main():
 
     print("Classifying captchas with symbol set {" + captcha_symbols + "}")
 
-    with if not os.path.exists(args.output) open(args.output, 'w') else open(args.output, 'a') as output_file:
+    with open(args.output, 'a' if os.path.exists(args.output) else 'w') as output_file:
         
         # char pref tflite model
         char_interpreter = tflite.Interpreter(args.model_name + '.tflite')
