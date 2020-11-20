@@ -88,7 +88,7 @@ def main():
 
             print('Classified ' + x)
             print('Moved file to done_captcha_dir' + os.path.join(done_captcha_dir, x))
-            os.move(os.path.join(args.captcha_dir, x), os.path.join(done_captcha_dir, x))
+            os.rename(os.path.join(args.captcha_dir, x), os.path.join(done_captcha_dir, x))
 
 if __name__ == '__main__':
     main()
